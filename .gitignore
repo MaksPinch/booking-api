@@ -1,3 +1,12 @@
 .venv/
 requirements.txt
 .env
+
+__pycache__/
+
+db.sqlite3
+
+.idea/
+.vscode/
+
+.pytest_cache/
