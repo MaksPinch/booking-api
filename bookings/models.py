@@ -31,6 +31,8 @@ class Booking(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        ordering = ["-start_time", "-id"]
+
         constraints = [
             models.CheckConstraint(
                 condition=models.Q(end_time__gt=models.F("start_time")),
