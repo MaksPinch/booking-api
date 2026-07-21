@@ -15,7 +15,7 @@ import psycopg
 try:
     conn = psycopg.connect(
         host="localhost",
-        port=5432,
+        port=5433,
         dbname="booking",
         user="booking_user",
         password="booking_pass",
