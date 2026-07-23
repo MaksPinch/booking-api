@@ -28,7 +28,7 @@ SECRET_KEY = "django-insecure-zp_n9x+*8&+_87%fnh4iucahb^jeogb_%z9-hr^j0*g%0hesyb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "testserver", "localhost"]
 
 
 # Application definition
@@ -86,11 +86,17 @@ DATABASES = {
         "USER": os.getenv("POSTGRES_USER", "booking_user"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD", ""),
         "HOST": os.getenv("POSTGRES_HOST", "localhost"),
-        "PORT": os.getenv("POSTGRES_PORT", "5432")
+        "PORT": os.getenv("POSTGRES_PORT", "5432"),
     }
 }
 
-for key in ["POSTGRES_DB", "POSTGRES_USER", "POSTGRES_PASSWORD", "POSTGRES_HOST", "POSTGRES_PORT"]:
+for key in [
+    "POSTGRES_DB",
+    "POSTGRES_USER",
+    "POSTGRES_PASSWORD",
+    "POSTGRES_HOST",
+    "POSTGRES_PORT",
+]:
     print(key, repr(os.getenv(key)))
 
 # Password validation
@@ -131,6 +137,6 @@ STATIC_URL = "static/"
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
 }
