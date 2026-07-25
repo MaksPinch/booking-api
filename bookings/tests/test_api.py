@@ -78,3 +78,107 @@ def test_user_bookings():
     assert response_b.data["count"] == 0
     assert response_a.status_code == 200
     assert response_a.data["count"] == 1
+
+
+@pytest.mark.django_db
+def test_happy_path():
+    User = get_user_model()
+    user = User.objects.create_user(username="maks", password="13131313")
+    resource = Resource.objects.create(
+        name="Conference Room 1",
+        slug="conferenceroom-1",
+        description="A small room for 6 people",
+        is_active=True,
+    )
+    data = {
+        "resource": "conferenceroom-1",
+        "start_time": timezone.now() + timedelta(hours=1),
+        "end_time": timezone.now() + timedelta(hours=2),
+    }
+    client = APIClient()
+    url = reverse("users_bookings")
+
+    client.force_authenticate(user=user)
+    response = client.post(url, data=data, format="json")
+
+    assert response.status_code == 201
+    assert Booking.objects.count() == 1
+
+
+@pytest.mark.django_db
+def test_booking_overlap():
+    User = get_user_model()
+    user = User.objects.create_user(username="maks", password="13131313")
+    resource = Resource.objects.create(
+        name="Conference Room 1",
+        slug="conferenceroom-1",
+        description="A small room for 6 people",
+        is_active=True,
+    )
+    booking = Booking.objects.create(
+        resource=resource,
+        user=user,
+        start_time=timezone.now() + timedelta(hours=1),
+        end_time=(timezone.now() + timedelta(hours=2)),
+        status=Booking.ACTIVE_STATUS,
+    )
+    client = APIClient()
+    url = reverse("users_bookings")
+    data = {
+        "resource": "conferenceroom-1",
+        "start_time": timezone.now() + timedelta(hours=1),
+        "end_time": timezone.now() + timedelta(hours=2),
+    }
+
+    client.force_authenticate(user)
+    response = client.post(url, data=data, format="json")
+
+    assert response.status_code == 400
+    assert Booking.objects.count() == 1
+
+
+@pytest.mark.django_db
+def test_end_time_lt_start_time():
+    User = get_user_model()
+    user = User.objects.create_user(username="maks", password="13131313")
+    resource = Resource.objects.create(
+        name="Conference Room 1",
+        slug="conferenceroom-1",
+        description="A small room for 6 people",
+        is_active=True,
+    )
+    client = APIClient()
+    url = reverse("users_bookings")
+    data = {
+        "resource": "conferenceroom-1",
+        "start_time": timezone.now() + timedelta(hours=2),
+        "end_time": timezone.now() + timedelta(hours=1),
+    }
+
+    client.force_authenticate(user)
+    response = client.post(url, data=data, format="json")
+
+    assert response.status_code == 400
+    assert Booking.objects.count() == 0
+
+
+@pytest.mark.django_db
+def test_anonymous_user():
+    client = APIClient()
+    url = reverse("users_bookings")
+    resource = Resource.objects.create(
+        name="Conference Room 1",
+        slug="conferenceroom-1",
+        description="A small room for 6 people",
+        is_active=True,
+    )
+    data = {
+        "resource": "conferenceroom-1",
+        "start_time": timezone.now() + timedelta(hours=1),
+        "end_time": timezone.now() + timedelta(hours=2),
+    }
+
+    response = client.post(url, data=data, format="json")
+
+    assert response.status_code == 401
+    assert Booking.objects.count() == 0

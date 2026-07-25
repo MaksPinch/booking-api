@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework.generics import ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from bookings.models import Booking, Resource
@@ -16,9 +17,12 @@ class ResourceDetailView(generics.RetrieveAPIView):
     serializer_class = ResourceSerializer
 
 
-class BookingsListView(generics.ListAPIView):
+class BookingsListView(ListCreateAPIView):
     serializer_class = BookingSerializer
     permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
     def get_queryset(self):
         queryset = Booking.objects.filter(user=self.request.user)
