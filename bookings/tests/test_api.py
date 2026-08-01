@@ -182,3 +182,100 @@ def test_anonymous_user():
 
     assert response.status_code == 401
     assert Booking.objects.count() == 0
+
+
+@pytest.mark.django_db
+def test_cancel_booking_by_owner():
+    client = APIClient()
+    User = get_user_model()
+    user = User.objects.create_user(username="maks", password="12345")
+    resource = Resource.objects.create(
+        name="Conference Room 1",
+        slug="conferenceroom-1",
+        description="A small room for 6 people",
+        is_active=True,
+    )
+    booking = Booking.objects.create(
+        resource=resource,
+        user=user,
+        start_time=timezone.now() + timedelta(hours=1),
+        end_time=(timezone.now() + timedelta(hours=2)),
+        status=Booking.ACTIVE_STATUS,
+    )
+    url = reverse("cancel_booking", kwargs={"booking_id": booking.id})
+
+    client.force_authenticate(user=user)
+    response = client.post(url)
+
+    assert response.status_code == 200
+
+    booking.refresh_from_db()
+
+    assert booking.status == Booking.CANCELLED_STATUS
+
+
+@pytest.mark.django_db
+def test_cancel_booking_by_other():
+    owner = APIClient()
+    other = APIClient()
+
+    User = get_user_model()
+
+    user_owner = User.objects.create_user(username="owner", password="owner123")
+    user_other = User.objects.create_user(username="other", password="other456")
+
+    resource = Resource.objects.create(
+        name="Conference Room 1",
+        slug="conferenceroom-1",
+        description="A small room for 6 people",
+        is_active=True,
+    )
+    booking = Booking.objects.create(
+        resource=resource,
+        user=user_owner,
+        start_time=timezone.now() + timedelta(hours=1),
+        end_time=(timezone.now() + timedelta(hours=2)),
+        status=Booking.ACTIVE_STATUS,
+    )
+    url = reverse("cancel_booking", kwargs={"booking_id": booking.id})
+
+    owner.force_authenticate(user=user_owner)
+    other.force_authenticate(user=user_other)
+
+    response = other.post(url)
+
+    assert response.status_code == 403
+
+    booking.refresh_from_db()
+
+    assert booking.status == Booking.ACTIVE_STATUS
+
+
+@pytest.mark.django_db
+def test_cancel_olready_canceled_booking():
+    client = APIClient()
+    User = get_user_model()
+    user = User.objects.create_user(username="maks", password="12345")
+    resource = Resource.objects.create(
+        name="Conference Room 1",
+        slug="conferenceroom-1",
+        description="A small room for 6 people",
+        is_active=True,
+    )
+    booking = Booking.objects.create(
+        resource=resource,
+        user=user,
+        start_time=timezone.now() + timedelta(hours=1),
+        end_time=(timezone.now() + timedelta(hours=2)),
+        status=Booking.CANCELLED_STATUS,
+    )
+    url = reverse("cancel_booking", kwargs={"booking_id": booking.id})
+
+    client.force_authenticate(user=user)
+    response = client.post(url)
+
+    assert response.status_code == 400
+
+    booking.refresh_from_db()
+
+    assert booking.status == Booking.CANCELLED_STATUS
