@@ -1,0 +1,162 @@
+[
+{
+  "model": "bookings.resource",
+  "pk": 1,
+  "fields": {
+    "name": "Conference Room пїЅ1",
+    "slug": "conferenceroom-1",
+    "description": "Small meeting room for 6 people, with a projector",
+    "is_active": true
+  }
+},
+{
+  "model": "bookings.resource",
+  "pk": 2,
+  "fields": {
+    "name": "Conference Room пїЅ2",
+    "slug": "conferenceroom-2",
+    "description": "Large conference room for 20 people, video conferencing",
+    "is_active": true
+  }
+},
+{
+  "model": "bookings.resource",
+  "pk": 5,
+  "fields": {
+    "name": "Conference Room 3",
+    "slug": "conferenceroom-3",
+    "description": "Medium room for 12 people",
+    "is_active": true
+  }
+},
+{
+  "model": "bookings.resource",
+  "pk": 6,
+  "fields": {
+    "name": "Phone Booth",
+    "slug": "phone-booth",
+    "description": "Single-person call booth",
+    "is_active": true
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 14,
+  "fields": {
+    "resource": 1,
+    "user": 6,
+    "start_time": "2026-08-03T10:00:00Z",
+    "end_time": "2026-08-03T11:00:00Z",
+    "status": "active",
+    "created_at": "2026-08-02T15:48:45.656Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 15,
+  "fields": {
+    "resource": 1,
+    "user": 7,
+    "start_time": "2026-08-03T14:00:00Z",
+    "end_time": "2026-08-03T15:30:00Z",
+    "status": "active",
+    "created_at": "2026-08-02T15:49:06.490Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 16,
+  "fields": {
+    "resource": 5,
+    "user": 6,
+    "start_time": "2026-08-04T09:00:00Z",
+    "end_time": "2026-08-04T10:00:00Z",
+    "status": "active",
+    "created_at": "2026-08-02T15:52:18.234Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 17,
+  "fields": {
+    "resource": 6,
+    "user": 7,
+    "start_time": "2026-08-03T16:00:00Z",
+    "end_time": "2026-08-03T16:30:00Z",
+    "status": "cancelled",
+    "created_at": "2026-08-02T15:52:44.436Z"
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$lFksJiQshjq71WxgVBSmNc$xwUOVa2UqIEX3BAuVgPUwe1k3b+AbtoYUPKUXUz5E3w=",
+    "last_login": "2026-08-01T14:15:12.380Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-07-16T13:02:05.975Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "12345",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "user_a",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-07-23T13:21:03.415Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 6,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$zLXo85PETwEpeZI55mR2XD$l5XV6Mh8AaeKt/NR8qe0RhmhEKxo3rf+ZZ+O7ntuLT8=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "alice",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-08-02T15:46:48.106Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 7,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$167RmIhWHrL0v1UgWTZG5l$UDCa+UYASeYSTlu0o3JOEWyiIOS+LhBWksYD9/g7Ivs=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "bob",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-08-02T15:47:07.782Z",
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]
