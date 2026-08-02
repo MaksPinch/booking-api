@@ -163,6 +163,31 @@ def test_end_time_lt_start_time():
 
 
 @pytest.mark.django_db
+def test_start_time_lt_current_time():
+    client = APIClient()
+    User = get_user_model()
+    user = User.objects.create_user(username="maks", password="1234567")
+    resource = Resource.objects.create(
+        name="Conference Room 1",
+        slug="conferenceroom-1",
+        description="A small room for 6 people",
+        is_active=True,
+    )
+    data = {
+        "resource": "conferenceroom-1",
+        "start_time": timezone.now() - timedelta(days=2),
+        "end_time": timezone.now() - timedelta(days=1),
+    }
+    url = reverse("users_bookings")
+
+    client.force_authenticate(user)
+    response = client.post(url, data=data, format="json")
+
+    assert response.status_code == 400
+    assert Booking.objects.count() == 0
+
+
+@pytest.mark.django_db
 def test_anonymous_user():
     client = APIClient()
     url = reverse("users_bookings")
@@ -212,6 +237,46 @@ def test_cancel_booking_by_owner():
     booking.refresh_from_db()
 
     assert booking.status == Booking.CANCELLED_STATUS
+
+
+@pytest.mark.django_db
+def test_get_the_right_booking():
+    client = APIClient()
+    User = get_user_model()
+    user = User.objects.create_user(username="maks", password="12345")
+    resource_1 = Resource.objects.create(
+        name="Conference Room 2",
+        slug="conferenceroom-2",
+        description="A large room for 10 people",
+        is_active=True,
+    )
+    resource_2 = Resource.objects.create(
+        name="Conference Room 3",
+        slug="conferenceroom-3",
+        description="A large room for 20 people with a projector",
+        is_active=True,
+    )
+    booking_1 = Booking.objects.create(
+        resource=resource_1,
+        user=user,
+        start_time=timezone.now() + timedelta(hours=1),
+        end_time=(timezone.now() + timedelta(hours=2)),
+        status=Booking.ACTIVE_STATUS,
+    )
+    booking_2 = Booking.objects.create(
+        resource=resource_2,
+        user=user,
+        start_time=timezone.now() + timedelta(hours=4),
+        end_time=(timezone.now() + timedelta(hours=6)),
+        status=Booking.ACTIVE_STATUS,
+    )
+    url = reverse("users_bookings")
+
+    client.force_authenticate(user)
+    response = client.get(f"{url}?resource={resource_1.slug}")
+
+    assert response.data["count"] == 1
+    assert response.data["results"][0]["resource"] == resource_1.slug
 
 
 @pytest.mark.django_db

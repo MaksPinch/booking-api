@@ -12,3 +12,5 @@ db.sqlite3
 .pytest_cache/
 
 CLAUDE.md
+
+.coverage
