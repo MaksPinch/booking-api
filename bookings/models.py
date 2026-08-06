@@ -11,6 +11,9 @@ class Resource(models.Model):
     class Meta:
         ordering = ["name", "id"]
 
+    def __str__(self):
+        return self.name
+
 
 class Booking(models.Model):
     ACTIVE_STATUS = "active"
@@ -29,6 +32,9 @@ class Booking(models.Model):
         max_length=20, choices=STATUS_CHOICE, default=ACTIVE_STATUS
     )
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.resource} — {self.start_time}"
 
     class Meta:
         ordering = ["-start_time", "-id"]
